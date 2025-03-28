@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>多云vpn邀请链接跳转中转</title>
+</head>
+<script defer>
+    window.onload = function (){
+        const urlParams = new URLSearchParams(window.location.search);
+        const paramsObject = Object.fromEntries(urlParams.entries());
+        const invite_code = paramsObject.invite_code; // '邀请码'
+        //获取网址
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'https://www.yunplus.store/site.txt', true);
+        xhr.onload = function() {
+            const sitesStr = this.responseText.trim();
+            var sitesArr =  sitesStr.split("\n");
+            var site  = getRandomElement(sitesArr);
+            console.log(site);
+
+            var site1 = document.getElementById('site1');
+            var site1_i = document.getElementById('site1_i');
+            //生成随机三位字母
+            var rand_domain1 = generateRandomLetters(3);
+            site1.href =  "http://"+ rand_domain1 +"." + site;
+            site1_i.textContent=  "多云网址（主用）";
+            var rand_domain2 = generateRandomLetters(3);
+            var site2 = document.getElementById('site2');
+            var site2_i = document.getElementById('site2_i');
+            site2.href =  "http://"+ rand_domain2 +"." + site;
+            site2_i.textContent= " 多云网址（备用）";
+            if(invite_code){
+                var invite_url = site1.href + 'auth/register?code=' + invite_code;
+                var meta = document.createElement('meta');
+                meta.httpEquiv = 'refresh';
+                meta.content = '0;url=' + invite_url;
+                document.head.appendChild(meta);
+            }else{
+                var invite_p = document.getElementById('invite_p');
+                invite_p.parentNode.removeChild(invite_p);
+                var invite_url_id = document.getElementById('invite_url')
+                invite_url_id.parentNode.removeChild(invite_url_id);
+            }
+            var invite_id = document.getElementById('invite_url');
+            invite_id.href = invite_url;
+        };
+        xhr.send();
+
+        function getRandomElement(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function generateRandomLetters(count) {
+            let result = '';
+            const characters = 'qwertyuiopasdfghjklzxcvbnm1234567890';
+            const charactersLength = characters.length;
+            for (let i = 0; i < count; i++) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
+        }
+    }
+</script>
+<body>
+<p id="invite_p">多云vpn正在为您跳转链接，长时间未跳转请手动点击下方链接 <h2><a id="invite_url" href="">点我！</a></h2></p>
+--------------------------------------------------------------------------------------------------------
+<br>
+<p>
+    链接失效或错误，请重新生成邀请码；
+    <br>
+    如已迷路点以下：
+</p>
+<p>
+    <a id="site1" href="http://site1.yunplus.store" target="_blank"><i id="site1_i"></i></a>
+</p>
+<p>
+    <a id="site2" href="http://site2.yunplus.store" target="_blank"><i id="site2_i"></i></a>
+</p>
+<p>
+    <a href="https://t.me/Dyvpn0" target="_blank"><i> 电报群</i></a>
+</p>
+</body>
+
+
+</html>
